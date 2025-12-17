@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outfit Selector - Desktop & Mobile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+
+      /* Full-screen background */
+      background: url('https://images.unsplash.com/photo-1765150675228-be0a9b87f595?q=80&w=988&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    h1 {
+      margin: 10px;
+      font-size: 24px;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      min-height: 90vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .model {
+      position: relative;
+      width: 60vw;
+      height: 80vh;
+    }
+
+    .item {
+      position: absolute;
+      z-index: 10;
+      transition: opacity 0.3s ease;
+    }
+
+    .headwear {
+      top: 5%;
+      left: 25%;
+      width: 50%;
+    }
+
+    .earrings {
+      top: 18%;
+      left: 35%;
+      width: 30%;
+    }
+
+    .top {
+      top: 35%;
+      left: 20%;
+      width: 60%;
+    }
+
+    .bottoms {
+      top: 65%;
+      left: 20%;
+      width: 60%;
+    }
+
+    .shoes {
+      top: 90%;
+      left: 30%;
+      width: 40%;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 18px;
+      }
+
+      .model {
+        width: 80vw; 
+        height: 70vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Choose Your Outfit</h1>
+  <div class="container">
+    <div class="model">
+      <img class="item headwear" id="headwear" src="" alt="Headwear">
+      <img class="item earrings" id="earrings" src="" alt="Earrings">
+      <img class="item top" id="top" src="" alt="Top">
+      <img class="item bottoms" id="bottoms" src="" alt="Bottoms">
+      <img class="item shoes" id="shoes" src="" alt="Shoes">
+
+      <!-- Swipe Zones -->
+      <div class="zone head-zone" onmousedown="startSwipe(event, 'headwear')" onmouseup="endSwipe(event, 'headwear')" ontouchstart="startSwipe(event, 'headwear')" ontouchend="endSwipe(event, 'headwear')"></div>
+      <div class="zone top-zone" onmousedown="startSwipe(event, 'top')" onmouseup="endSwipe(event, 'top')" ontouchstart="startSwipe(event, 'top')" ontouchend="endSwipe(event, 'top')"></div>
+      <div class="zone bottoms-zone" onmousedown="startSwipe(event, 'bottoms')" onmouseup="endSwipe(event, 'bottoms')" ontouchstart="startSwipe(event, 'bottoms')" ontouchend="endSwipe(event, 'bottoms')"></div>
+      <div class="zone shoes-zone" onmousedown="startSwipe(event, 'shoes')" onmouseup="endSwipe(event, 'shoes')" ontouchstart="startSwipe(event, 'shoes')" ontouchend="endSwipe(event, 'shoes')"></div>
+    </div>
+  </div>
+
+  <script>
+    // Clothing data with your specific test links
+    const clothes = {
+      headwear: [
+        "https://i.imgur.com/jeOqAzS.jpeg", // Option 1
+        "https://i.imgur.com/wRMawyO.jpeg", // Option 2
+        "" // None
+      ],
+      earrings: [
+        "https://i.imgur.com/jeOqAzS.jpeg", // Option 1 (Same image as above)
+        "https://i.imgur.com/wRMawyO.jpeg", // Option 2
+        "" // None
+      ],
+      top: [
+        "https://i.imgur.com/jeOqAzS.jpeg", // Option 1
+        "https://i.imgur.com/wRMawyO.jpeg", // Option 2
+        "" // None
+      ],
+      bottoms: [
+        "https://i.imgur.com/jeOqAzS.jpeg", // Option 1
+        "https://i.imgur.com/wRMawyO.jpeg", // Option 2
+        "" // None
+      ],
+      shoes: [
+        "https://i.imgur.com/jeOqAzS.jpeg", // Option 1
+        "https://i.imgur.com/wRMawyO.jpeg", // Option 2
+        "" // None
+      ]
+    };
+
+    // Track the current index for each category
+    const currentIndexes = {
+      headwear: 0,
+      earrings: 0,
+      top: 0,
+      bottoms: 0,
+      shoes: 0
+    };
+
+    // Swipe and mouse drag tracking
+    let swipeStartX = 0;
+    let isMouseDragging = false;
+
+    function startSwipe(event, part) {
+      // For touch events
+      if (event.touches && event.touches[0]) {
+        swipeStartX = event.touches[0].clientX;
+      }
+      // For mouse events
+      if (event.type === "mousedown") {
+        isMouseDragging = true;
+        swipeStartX = event.clientX;
+      }
+    }
+
+    function endSwipe(event, part) {
+      let swipeEndX;
+
+      // For touch events
+      if (event.changedTouches && event.changedTouches[0]) {
+        swipeEndX = event.changedTouches[0].clientX;
+      }
+      // For mouse events
+      if (event.type === "mouseup" && isMouseDragging) {
+        swipeEndX = event.clientX;
+        isMouseDragging = false;
+      }
+
+      if (swipeEndX !== undefined) {
+        const swipeDistance = swipeEndX - swipeStartX;
+
+        if (swipeDistance > 30) {
+          changeClothing(part, 'next'); // Swipe/move right
+        } else if (swipeDistance < -30) {
+          changeClothing(part, 'prev'); // Swipe/move left
+        }
+      }
+    }
+
+    function changeClothing(part, direction) {
+      const items = clothes[part];
+      const maxIndex = items.length;
+
+      if (direction === 'next') {
+        currentIndexes[part] = (currentIndexes[part] + 1) % maxIndex;
+      } else if (direction === 'prev') {
+        currentIndexes[part] = (currentIndexes[part] - 1 + maxIndex) % maxIndex;
+      }
+
+      const imageElement = document.getElementById(part);
+      imageElement.src = items[currentIndexes[part]];
+    }
+
+    // Initialize all images on page load
+    function initializeOutfit() {
+      Object.keys(clothes).forEach(part => {
+        const imageElement = document.getElementById(part);
+        imageElement.src = clothes[part][currentIndexes[part]];
+      });
+    }
+
+    // Initialize on page load
+    initializeOutfit();
+  </script>
+</body>
+</html>
